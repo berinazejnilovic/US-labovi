@@ -1,0 +1,35 @@
+#include "mbed.h"
+#include "lpc1114etf.h"
+
+
+BusOut leds(LED0, LED1, LED2, LED3, LED4, LED5, LED6, LED7) ;
+DigitalIn btn(Taster_1);
+DigitalOut enable (LED_ACT);
+
+
+int main() {
+    enable = 0;
+    int counter = 0;
+    bool incrementMode = true;
+    while(1) {
+        if (btn) {
+            incrementMode = !incrementMode;
+            thread_sleep_for(500);
+        }
+        if (incrementMode) {
+            if (counter == 255) {
+                counter = 0;
+            } else {
+                counter++;
+            }
+        } else {
+            if (counter == 0) {
+                counter = 255;
+            } else {
+                counter--;
+            }
+        }
+        leds = counter;
+        thread_sleep_for(500);
+    }
+}
