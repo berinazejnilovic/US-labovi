@@ -1,0 +1,36 @@
+#include "mbed.h"
+#include "lpc1114etf.h"
+
+
+BusOut redovi(dp16, dp15, dp17);
+BusIn kolone(dp9,dp10,dp11);
+BusOut lampice(LED0, LED1,LED2, LED3, LED4, LED5, LED6, LED7);
+DigitalOut enable(LED_ACT);
+
+
+int main (){
+    enable=0;
+    int red, kolona, broj=0;
+    int matrica[3][3]={{1,4,7},{2,5,8},{3,6,9}};
+    while(1){
+        for(int i=0;i<8;i++)
+            lampice[i]=1;
+        for(int i=0;i<3;i++){
+            redovi[i]=1;
+            red=i;
+            for(int j=0;j<3;j++){
+                if(kolone[j]){
+                    broj=matrica[j][red];
+                    if(broj!=0){
+                        lampice[broj-1]=0;
+                        thread_sleep_for(500);
+                    }  
+                }
+            }
+            for(int j=0; j<8; j++) {
+               lampice[j]=1;
+            }
+            redovi[i]=0;
+        }
+    }  
+}
