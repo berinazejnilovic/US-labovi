@@ -1,0 +1,10 @@
+import machine
+from machine import Pin
+
+G=Pin(12,Pin.OUT)
+B=Pin(13,Pin.OUT)
+R=Pin(14,Pin.OUT)
+
+R.value(0)
+B.value(1)
+G.value(1) // jedna od mogućih 8 kombinacija boja
