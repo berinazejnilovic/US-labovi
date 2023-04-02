@@ -1,0 +1,38 @@
+#include "mbed.h"
+#include "lpc1114etf.h"
+
+
+BusOut leds(LED0, LED1, LED2, LED3, LED4, LED5, LED6, LED7) ;
+DigitalOut enable (LED_ACT);
+
+
+const unsigned char arr[10] = {0x00, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0xff};
+
+
+int main() {
+    enable = 0;
+    int counter = 0;
+    bool incrementMode = true;
+    leds = arr[counter];
+   
+    while(1) {
+        thread_sleep_for(500);
+        if (incrementMode) {
+            leds = arr[counter];
+            if (counter == 9) {
+                incrementMode = false;
+                counter--;
+                continue;
+            }
+            counter++;
+        } else {
+            leds = arr[counter];
+            if (counter == 0) {
+                incrementMode = true;
+                counter++;
+                continue;
+            }
+            counter--;
+        }
+    }
+}
