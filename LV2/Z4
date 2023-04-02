@@ -1,0 +1,38 @@
+#include "mbed.h"
+#include "lpc1114etf.h"
+
+
+BusOut leds(LED0, LED1, LED2, LED3, LED4, LED5, LED6, LED7) ;
+DigitalOut enable (LED_ACT);
+DigitalOut led0(LED0);
+DigitalIn taster1(Taster_1);
+DigitalIn taster2(Taster_2);
+
+
+const unsigned char arr[10] = {0x00, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0xff};
+
+
+void showLeds(int waitTime) {
+    bool incrementMode = true;
+    int counter = 1;
+    leds = arr[counter];
+   
+    while (1) {
+        if (incrementMode) {
+            leds = arr[counter];
+            if (counter == 9) {
+                incrementMode = false;
+                counter--;
+            } else {
+                counter++;
+            }
+        } else {
+            leds = arr[counter];
+            if (counter == 0) {
+                break;
+            }
+            counter--;
+        }
+        thread_sleep_for(waitTime);
+    }
+}
