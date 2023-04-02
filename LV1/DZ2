@@ -1,0 +1,46 @@
+import machine
+from machine import Pin
+import time
+
+G=Pin(12,Pin.OUT)
+B=Pin(13,Pin.OUT)
+R=Pin(14,Pin.OUT)
+vrijeme = 0.1
+tacno=True
+
+while 1:
+G.value(1)
+time.sleep(vrijeme)
+
+G.value(0)
+B.value(1)
+time.sleep(vrijeme)
+
+G.value(1)
+time.sleep(vrijeme)
+G.value(0)
+B.value(0)
+R.value(1)
+time.sleep(vrijeme)
+
+G.value(1)
+time.sleep(vrijeme)
+
+G.value(0)
+B.value(1)
+time.sleep(vrijeme)
+
+G.value(1)
+time.sleep(vrijeme) 
+
+if(vrijeme>=1) :
+tacno=False
+print (tacno)
+elif(vrijeme<=0) :
+tacno=True
+print (tacno)
+if(tacno) :
+vrijeme+=0.1
+else :
+vrijeme-=0.1
+print (vrijeme)
