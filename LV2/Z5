@@ -1,0 +1,33 @@
+#include "mbed.h"
+#include "lpc1114etf.h"
+
+
+DigitalOut led(LED1);
+DigitalOut enable (LED_ACT);
+
+
+int main() {
+    enable = 0;
+    const int T = 1000;
+    int timeStep = T * 0.9 / 15;
+    int counterStep = 1;
+    int counter = 0;
+    int timeOn = T;
+    int timeOff = T;
+    while(1) {
+        led = 1;
+        thread_sleep_for(timeOn);
+        led = 0;
+        thread_sleep_for(timeOff);
+       
+        if (counter == 15 || counter == -15) {
+            counterStep = -counterStep;
+            timeStep = -timeStep;
+        }
+       
+        timeOn = timeOn + timeStep;
+        timeOff = timeOff - timeStep;
+       
+        counter = counter + counterStep;
+    }
+}
