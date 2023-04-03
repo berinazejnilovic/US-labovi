@@ -12,8 +12,8 @@ int main() {
     leds = arr[counter];
     
     while(1) {
-        double vrijeme=pot*0.6;
-        wait_us(1);
+        float vrijeme=read();
+        wait_us(vrijeme);
         if (incrementMode) {
             
             leds = arr[counter];
