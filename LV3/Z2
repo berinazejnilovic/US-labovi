@@ -130,67 +130,57 @@ while 1:
     D1.off()
     time.sleep_ms(2)
     DP.on()
-
     while t1.value()==1:
         klik1=True
-        if t1.value()==0:
-            if klik1:
-                print("klik1")
-                brojac+=1
-                klik1=False
-
+    if t1.value()==0:
+        if klik1:
+            print("klik1")
+            brojac+=1
+            klik1=False
     while t2.value()==1:
         klik2=True
-
-        if t2.value()==0:
-            if klik2:
-                brojac-=1
-                klik2=False
-
+    if t2.value()==0:
+        if klik2:
+            brojac-=1
+            klik2=False
     while t3.value()==1:
         klik3=True
-
-        if t3.value()==0:
-            if klik3:
-                brojac=0
-                klik3=False
-
+    if t3.value()==0:
+        if klik3:
+            brojac=0
+            klik3=False
     while t4.value()==1:
         klik4=True
-
-        if t4.value()==0:
-            if klik4:
-                while 1:
-                    k=brojac//10%10
-                    for i in range(0,150):
-                        D1.on()
-                        led(brojac%10)
-                        D4.off()
-                        time.sleep_ms(2)
-                        D4.on()
-                        led(k)
-                        D3.off()
-                        time.sleep_ms(2)
-                        D3.on()
-                        led(brojac//100%10)
-                        D2.off()
-                        time.sleep_ms(2)
-                        D2.on()
-                        led(brojac//1000)
-                        D1.off()
-                        time.sleep_ms(2)
-
-                    if t4.value()==1:
-                        klik4=False
-
-            while True:
-                    if t4.value()==0:
-                        break
+    if t4.value()==0:
+        if klik4:
+            while 1:
+                k=brojac//10%10
+                for i in range(0,150):
+                    D1.on()
+                    led(brojac%10)
+                    D4.off()
+                    time.sleep_ms(2)
+                    D4.on()
+                    led(k)
+                    D3.off()
+                    time.sleep_ms(2)
+                    D3.on()
+                    led(brojac//100%10)
+                    D2.off()
+                    time.sleep_ms(2)
+                    D2.on()
+                    led(brojac//1000)
+                    D1.off()
+                    time.sleep_ms(2)
+                if t4.value()==1:
+                    klik4=False
+                    while True:
+                        if t4.value()==0:
+                            break
                     brojac+=1
                     if t4.value()==1 or klik4 == False:
                         klik4=False
-
-            while True:
-                    if t4.value()==0:
-                        break
-                    break
+                    while True:
+                        if t4.value()==0:
+                            break
+            	       break
