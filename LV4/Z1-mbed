@@ -1,19 +1,20 @@
 #include "mbed.h"
+#include "lpc1114etf.h"
 
 AnalogIn pot(p15);
-
 BusOut leds(p5,p6,p7,p8,p9,p10,p11,p12);
+DigitalOut enable(LED_ACT);
 
 const unsigned char arr[10] = {0x00, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0xff};
 
 int main() {
+    enable=0;
     int counter = 0;
     bool incrementMode = true;
     leds = arr[counter];
     
     while(1) {
-        float vrijeme=read();
-        wait_us(vrijeme);
+        thread_sleep_for(1000*(1.9*pot+0.1));
         if (incrementMode) {
             
             leds = arr[counter];
