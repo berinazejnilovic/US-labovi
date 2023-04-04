@@ -1,8 +1,8 @@
 #include "mbed.h"
 #include "lpc1114etf.h"
 
-AnalogIn pot(p15);
-BusOut leds(p5,p6,p7,p8,p9,p10,p11,p12);
+AnalogIn pot(dp9);
+BusOut leds(LED0,LED1,LED2,LED3,LED4,LED5,LED6,LED7);
 DigitalOut enable(LED_ACT);
 
 const unsigned char arr[10] = {0x00, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0xff};
