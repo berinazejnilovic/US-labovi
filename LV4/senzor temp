@@ -1,0 +1,17 @@
+import machine
+
+# postavljanje pinova
+swdio_pin = machine.Pin(5, machine.Pin.IN)
+swclk_pin = machine.Pin(4, machine.Pin.OUT)
+
+while True:
+    # postavljanje vrijednosti SWCLK pina na HIGH
+    swclk_pin.value(1)
+    # čitanje vrijednosti sa SWDIO pina
+    value = swdio_pin.value()
+    print("Vrijednost senzora: ", value)
+
+    # postavljanje vrijednosti SWCLK pina na LOW
+    swclk_pin.value(0)
+    # čekanje 100 ms prije sljedećeg očitanja
+    machine.sleep(100)
