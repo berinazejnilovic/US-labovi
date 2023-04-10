@@ -1,0 +1,95 @@
+Zadatak 1
+
+#include "mbed.h"
+#include "lpc1114etf.h"
+
+PwmOut led(dp18);
+AnalogIn potenciometar(AD1);
+DigitalOut ledice(LED_ACT);
+
+int main() {
+    ledice = 1;
+    float vrijeme = 0;
+    led.period(4.0f);
+    while (1) {
+        vrijeme = potenciometar.read();
+        led.write(vrijeme + 0.000005f);
+        wait_us(50e3);
+    }
+    
+Zadatak 2
+
+#include "mbed.h"
+#include "lpc1114etf.h"
+
+#include "mbed.h"
+
+AnalogIn potenciometar(AD1);
+BusOut diode(LED0, LED1, LED2, LED3, LED4, LED5, LED6, LED7);
+DigitalOut ledice(LED_ACT);
+
+int main() {
+    ledice = 0;
+    float ocitano = 0;
+    float granice[9] = {0, 0.125f, 0.25f, 0.375f, 0.5f, 0.625f, 0.75f, 0.875f, 1.0f};
+    int indeks = 7;
+    diode = -1;
+    while (1) {
+        indeks = 8;
+        ocitano = potenciometar.read();
+        for (int i = 0; i < 8; i++){
+            if(granice[i] <= ocitano && granice[i+1] >= ocitano){
+                if (ocitano - granice[i] < granice[i+1] - ocitano)
+                    indeks = i;
+                else 
+                    indeks = i + 1;
+            } 
+        }
+        diode = ~(-1<<indeks);
+        wait_us(50);
+    }
+}
+
+Zadatak 3
+
+#include "mbed.h"
+#include "lpc1114etf.h"
+
+#include "mbed.h"
+
+AnalogIn potenciometar(AD1);
+BusOut diode(LED0, LED1, LED2, LED3, LED4, LED5, LED6, LED7);
+DigitalOut ledice(LED_ACT);
+
+int main() {
+    ledice = 0;
+    float ocitano = 0;
+    float granice[9] = {0, 0.125f, 0.25f, 0.375f, 0.5f, 0.625f, 0.75f, 0.875f, 1.0f};
+    int indeks = 7;
+    while (1) {
+        ocitano = potenciometar.read();
+        diode = 0;
+        wait_us(1e3 - ocitano * 1e3);
+        diode = -1;
+        wait_us(ocitano * 1e3);
+    }
+}
+
+Zadatak 4
+
+#include "mbed.h"
+
+DigitalOut led1(LED1);
+AnalogOut izlaz(PTE30);
+
+int main(){
+    izlaz = 0;
+    float vrijednost = 0;
+    while (true){
+        wait_us(50);
+        vrijednost += 0.02;
+        izlaz = vrijednost;
+        if (vrijednost >= 1)
+            vrijednost = 0;
+    }
+}
