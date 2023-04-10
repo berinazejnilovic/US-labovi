@@ -1,0 +1,33 @@
+#include "mbed.h"
+#define WAIT_TIME_MS 500 
+AnalogOut osciloskop(PTE30);
+
+int main(){    
+  double sirina=50e, 
+  iznos=0, 
+  korak=1./25;    
+  int i=25;        
+  while (true)    {     
+    osciloskop.write(iznos);     
+    iznos=korak*i;     
+    wait_us(sirina*1e6);     
+    i--;     
+    if(i==0)     
+    i=25;    
+  }
+}
+----------------------------------------
+#include "mbed.h"
+AnalogOut izlaz(PTE30);
+
+
+int main()
+{
+    while (true)
+    {
+        for(char i=0;i<50;i++){
+            izlaz.write((i%25)/25.);
+            wait_us(50);
+        }
+    }
+}
