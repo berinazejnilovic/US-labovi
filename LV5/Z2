@@ -1,0 +1,76 @@
+from machine import Pin, ADC, PWM
+import time
+
+# Postavljanje fotootpornika
+adc = ADC(Pin(26))
+adc.atten(ADC.ATTN_11DB)
+
+# Postavljanje LED dioda
+leds = [PWM(Pin(i), freq=1000) for i in range(8)]
+
+# Funkcija za osvjetljavanje LED dioda ovisno o vrijednosti fotootpornika
+def osvijetli_ledove():
+    vrijednost = adc.read()
+    intenzitet = (1023 - vrijednost) // 128
+    for i in range(8):
+        if i == 0:
+            leds[i].duty(64)
+        elif i == 7:
+            leds[i].duty(1023 - intenzitet * 128)
+        else:
+            leds[i].duty((i - 1) * intenzitet * 128 // 5)
+
+# Beskonačna petlja za osvjetljavanje LED dioda
+while True:
+    osvijetli_ledove()
+    time.sleep(0.1)
+-----------------------------------------------------------
+import machine
+from machine import Pin
+from machine import ADC, PWM
+import time
+
+#class machine.PWM(dest, *, freq, duty_u16, duty_ns) 
+led0 = PWM(Pin(4))
+led1 = PWM(Pin(5))
+led2 = PWM(Pin(6))
+led3 = PWM(Pin(7))
+led4 = PWM(Pin(8))
+led5 = PWM(Pin(9))
+led6 = PWM(Pin(10))
+led7 = PWM(Pin(11))
+
+foto_otpornik = ADC(26)
+
+while True:
+    vrijednost = foto_otpornik.read_u16()
+        
+    if vrijednost < 65535/5.0:
+        duty_cycle_7 = 1.0
+        led7.duty_u16(int(duty_cycle_7*1023))
+        duty_cycle_0 = 0.0
+        led0.duty_u16(int(duty_cycle_0*1023))
+        
+        #duty_cycle_1_6 = vrijednost / 65535.0
+        led1.duty_u16(int(duty_cycle_7*1023/7))
+        led2.duty_u16(int(duty_cycle_7*1023*2/7))
+        led3.duty_u16(int(duty_cycle_7*1023*3/7))
+        led4.duty_u16(int(duty_cycle_7*1023*4/7))
+        led5.duty_u16(int(duty_cycle_7*1023*5/7))
+        led6.duty_u16(int(duty_cycle_7*1023*6/7))
+        
+    elif vrijednost >= 65535/2.0:
+        duty_cycle_7 = 1.0
+        duty_cycle_0 = 0.0
+        led7.duty_u16(int(duty_cycle_0*1023))
+        led0.duty_u16(int(duty_cycle_7*1023))
+        
+        #duty_cycle_1_6 = vrijednost / 65535.0
+        led6.duty_u16(int(duty_cycle_7*1023/7))
+        led5.duty_u16(int(duty_cycle_7*1023*2/7))
+        led4.duty_u16(int(duty_cycle_7*1023*3/7))
+        led3.duty_u16(int(duty_cycle_7*1023*4/7))
+        led2.duty_u16(int(duty_cycle_7*1023*5/7))
+        led1.duty_u16(int(duty_cycle_7*1023*6/7))
+    
+    time.sleep_ms(200)
