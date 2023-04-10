@@ -27,7 +27,7 @@ DigitalOut enable(LED_ACT);
 
 int main()
 {
-    enable=0;
+    enable=1;
     ledica.period_ms(500);
     while (true)
     {
