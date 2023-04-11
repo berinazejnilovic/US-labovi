@@ -1,7 +1,7 @@
 #include "mbed.h"
 #include "lpc1114etf.h"
 
-#define T 0.00005
+#define T 50
 
 PwmOut led(PWM1);
 AnalogIn potenciometar(AD1);
@@ -9,29 +9,8 @@ DigitalOut enable(LED_ACT);
 
 int main() {    
     enable = 1;        
-    led.period(T);
-    while(true){    
-        float broj=potenciometar.read();    
-        led.write(broj);
-    }
- }
- 
- VERZIJA 2
- 
-#include "mbed.h"
-#include "lpc1114etf.h"
-
-PwmOut ledica(dp18);
-AnalogIn potenciometar(dp9);
-DigitalOut enable(LED_ACT);
-
-int main()
-{
-    enable=1;
-    ledica.period_ms(500);
-    while (true)
-    {
-        ledica=potenciometar.read();
+    led.period_us(T);
+    while(true){      
+        led.write(potenciometar.read());
     }
 }
- 
