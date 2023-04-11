@@ -46,4 +46,41 @@ while True:
         led1.duty_u16(50000)
         led0.duty_u16(0)
         
-  
+  -----------------------------------------------
+  import machine
+from machine import Pin, ADC, PWM
+import utime
+
+led0 = PWM(Pin(4))
+led1 = PWM(Pin(5))
+led2 = PWM(Pin(6))
+led3 = PWM(Pin(7))
+led4 = PWM(Pin(8))
+led5 = PWM(Pin(9))
+led6 = PWM(Pin(10))
+led7 = PWM(Pin(11))
+
+adc = ADC(Pin(28))
+
+while 1:
+    x=adc.read_u16()
+    utime.sleep(0.1)
+    print(x)
+     
+    if x >= 50000:
+        led7.duty_u16(65534)
+    elif x <= 50000:
+        led7.duty_u16(0)
+    led6.duty_u16(int(x/65535 * 65535))
+    led5.duty_u16(int(x/65535 * 32768))
+    led4.duty_u16(int(x/65535 * 16384))
+    led3.duty_u16(int(x/65535 * 8192))
+    led2.duty_u16(int(x/65535 * 4096))
+    led1.duty_u16(int(x/65535 * 2048))
+    led0.duty_u16(int(x/65535 * 1024))
+
+
+
+
+
+
