@@ -1,0 +1,49 @@
+from machine import Pin, PWM, ADC
+import time
+
+foto = ADC(Pin(28))
+
+led0 = PWM(Pin(4))
+led1 = PWM(Pin(5))
+led2 = PWM(Pin(6))
+led3 = PWM(Pin(7))
+led4 = PWM(Pin(8))
+led5 = PWM(Pin(9))
+led6 = PWM(Pin(10))
+led7 = PWM(Pin(11))
+
+
+while True:
+    led0.duty_u16(65535)
+    led1.duty_u16(65535)
+    led2.duty_u16(65535)
+    led3.duty_u16(65535)
+    led4.duty_u16(65535)
+    led5.duty_u16(65535)
+    led6.duty_u16(65535)
+    led7.duty_u16(65535)
+    
+    ocitanje = foto.read_u16()
+    time.sleep(0.1)
+    
+  
+    if foto.read_u16() in range(30000, 65000):
+        led7.duty_u16(0)
+        led6.duty_u16(18000)
+        led5.duty_u16(27000)
+        led4.duty_u16(36000)
+        led3.duty_u16(45000)
+        led2.duty_u16(54000)
+        led1.duty_u16(60000)
+        led0.duty_u16(65535)
+    elif foto.read_u16() == 0:
+        led7.duty_u16(65534)
+        led6.duty_u16(1000)
+        led5.duty_u16(5000)
+        led4.duty_u16(20000)
+        led3.duty_u16(30000)
+        led2.duty_u16(40000)
+        led1.duty_u16(50000)
+        led0.duty_u16(0)
+        
+  
