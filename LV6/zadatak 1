@@ -1,0 +1,30 @@
+#include "mbed.h"
+#include "lpc1114etf.h"
+
+BusOut prikaz1(LED3, LED2, LED1, LED0);
+BusOut prikaz2(LED7, LED6, LED5, LED4);
+
+DigitalOut enable(LED_ACT);
+DigitalIn taster(Taster_1);
+
+const float T(0.2);
+int brojac1(0);
+int brojac2(0);
+
+void ticker_callback() {
+    brojac1=(brojac1+1)%16;
+    if (taster) brojac2=(brojac2+1)%16;
+    prikaz1=brojac1;
+    prikaz2=brojac2;
+}
+
+int main() {
+    enable=0;
+    prikaz1=brojac1;
+    prikaz2=brojac2;
+    Ticker ticker;
+    ticker.attach(&ticker_callback, T);
+    while(1) {
+        // The rest of the main loop is idle.
+    }
+}
