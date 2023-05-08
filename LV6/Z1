@@ -1,1 +1,36 @@
+#include "mbed.h"
+#include "lpc1114etf.h"
 
+BusOut prikaz1(LED3, LED2, LED1, LED0);
+BusOut prikaz2(LED7, LED6, LED5, LED4);
+InterruptIn taster(Taster_1);
+DigitalOut diode(LED_ACT);
+Timer debounce;
+
+Ticker t;
+const float T (0.2);
+int brojac1(0);
+int brojac2(0);
+
+void b1(){
+    brojac1 = (brojac1 + 1) % 16;
+    prikaz1 = brojac1;
+}
+
+void b2(){
+    if (debounce.read_ms() < 200)
+        return;
+    debounce.reset();
+    brojac2 = (brojac2 + 1) % 16;
+    prikaz2 = brojac2;
+}
+
+int main() {
+    prikaz1 = brojac1;
+    prikaz2 = brojac2;
+    debounce.start();
+    diode = 0;
+    t.attach(&b1, T);
+    taster.rise(&b2);
+    while(1);
+}
