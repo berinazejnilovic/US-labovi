@@ -1,0 +1,83 @@
+import network
+import time
+import machine
+from machine import Pin, unique_id, PWM, ADC
+import ubinascii
+from umqtt.robust import MQTTClient
+
+print("Konektovanje na WiFi", end="")
+wlan = network.WLAN(network.STA_IF)
+wlan.active(True)
+wlan.connect("Ugradbeni", "USlaboratorija220")
+while not wlan.isconnected():
+  print(".", end="")
+  time.sleep(0.1)
+print("\nKonektovano!")
+print(wlan.ifconfig())
+
+taster = Pin(0, Pin.IN)
+led1 = Pin(4, Pin.OUT)
+led2 = Pin(5, Pin.OUT)
+led3 = PWM(Pin(6))
+ledred = PWM(Pin(14))
+ledgreen = PWM(Pin(12))
+ledblue = PWM(Pin(13))
+potenciometar = ADC(Pin(26))
+
+TEMASUBLED1 = 'vikibeki/led1'
+TEMASUBLED2 = 'vikibeki/led2'
+TEMASUBLED3 = 'vikibeki/led3'
+TEMASUBLED4 = 'vikibeki/ledred'
+TEMASUBLED5 = 'vikibeki/ledgreen'
+TEMASUBLED6 = 'vikibeki/ledblue'
+TEMAPUBPOT = 'vikibeki/potenciometar'
+TEMAPUBTAST = 'vikibeki/taster'
+TEMATEST = 'vikibeki/test'
+
+pot_value = 0.
+stanje_tastera = -1
+ledred.freq(1000)
+ledgreen.freq(1000)
+ledblue.freq(1000)
+
+def sub_cb(topic, message):
+  print("PORUKA: ",topic, " vrijednost: ", message)
+  if topic==b'vikibeki/led1':
+    led1.value(int(message))
+  elif topic==b'vikibeki/led2':
+    led2.value(int(message))
+  elif topic==b'vikibeki/led3':
+    led3.duty_u16(int(65534*float(message)))
+  elif topic==b'vikibeki/ledred':
+    ledred.duty_u16(int(65534*float(message)))
+  elif topic==b'vikibeki/ledgreen':
+    ledgreen.duty_u16(int(65534*float(message)))
+  elif topic==b'vikibeki/ledblue':
+    ledblue.duty_u16(int(65534*float(message)))
+  
+mqtt_server = 'broker.hivemq.com'
+unique_id = ubinascii.hexlify(unique_id())
+state = 0
+
+mqtt_conn = MQTTClient(client_id=unique_id, server=mqtt_server, user='', password='', port=1883)
+mqtt_conn.set_callback(sub_cb)
+mqtt_conn.connect()
+mqtt_conn.subscribe(TEMASUBLED1)
+mqtt_conn.subscribe(TEMASUBLED2)
+mqtt_conn.subscribe(TEMASUBLED3)
+mqtt_conn.subscribe(TEMASUBLED4)
+mqtt_conn.subscribe(TEMASUBLED5)
+mqtt_conn.subscribe(TEMASUBLED6)
+print('Konektovano na {0}'.format(mqtt_server))
+
+while 1:
+  mqtt_conn.check_msg()
+  if(potenciometar.read_u16()!=pot_value):
+    pot_value = potenciometar.read_u16()
+    time.sleep(0.5)
+    potString = "{\n \"Potenciometar\" : " + str(pot_value/65535) + "\n}"
+    mqtt_conn.publish(TEMAPUBPOT, potString)
+  if stanje_tastera!=taster.value():
+    stanje_tastera = taster.value()
+    tasterString = "{\n \"Taster\" : " + str(stanje_tastera) + "\n}"
+    mqtt_conn.publish(TEMAPUBTAST, tasterString)
