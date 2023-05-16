@@ -1,0 +1,34 @@
+#!/usr/bin/python3
+import time
+import RPi.GPIO as GPIO # Import Raspberry Pi GPIO library
+
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+
+dc = 0
+
+GPIO.setup(2, GPIO.OUT)
+p = GPIO.PWM(2, 50)
+p.ChangeDutyCycle(100)
+p.start(100)
+
+def funkcija(channel):
+        global dc
+        dc = dc + 10
+        if (dc >= 100):
+                dc = 0
+p.ChangeDutyCycle(100 - dc)
+
+
+
+#GPIO.setwarnings(False) # Ignore warning for now
+#GPIO.setmode(GPIO.BCM) # Use physical pin numbering
+GPIO.setup(17, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) #
+
+#GPIO.add_event_callback(17, funkcija, bouncetime=200)
+GPIO.add_event_detect(17, GPIO.RISING, callback=funkcija, bouncetime=200)
+
+disi = 10
+
+while True:
+        time.sleep(0.1)
