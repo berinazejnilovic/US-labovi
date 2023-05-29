@@ -1,0 +1,131 @@
+Drugi zadatak, kopiran sa raspberry-a (i treći je, a četvrti urađen nije)
+
+
+        .data
+prompt1:
+        .asciz "Unesite niz:\n"
+prompt2:
+        .asciz "Sortiran niz:\n"
+elementi:
+        .asciz "                   "
+
+        .text
+        .global _start
+
+_start:
+
+        mov     r7,#4
+        mov     r0,#1
+        ldr     r1,=prompt1
+        mov     r2,#13        @broj karaktera prve recenice
+        swi     #0
+
+        mov     r7,#3
+        mov     r0,#0
+        ldr     r1,=elementi
+        mov     r2,#10         @niz ce nam imati 15 elemenata
+        swi     #0
+
+        mov r0, #10
+        loop1:
+                ldr r5, addr1            @uzmi adresu prvog elementa
+                add r6, r5, #1           @u r6 ide adresa prvo elementa uvecena za 1
+                mov r3, #14              @za niz od 15 elemenata vrsimo 14 poređenja
+                loop2:
+                        ldrb r1, [r5]
+                        ldrb r2, [r6]
+                        cmp r1, r2
+                        blo loop3         @branch lower, ako je r1 < r2, predji na loop3
+                        mov r4, r2        @ako nije ispunjen uslov, znaci da je prvi clan niz veci od drugog pa im zamijeni mjesta
+                        mov r2, r1
+                        mov r1, r4
+                                loop3:
+                                strb r1, [r5]    @u ovom dijelu na adrese gdje pokazuju r5 i r6 pohranjujemo vrijednosti r1 i r2 respektivo
+                                strb r2, [r6]
+                                add r5, r5, #1   @inkrementiramo r5 i r6
+                                add r6, r6, #1
+                                subs r3, r3, #1  @smanjujemo vrijednost brojaca petlje za 1
+                                bne loop2        @vrati se na loop2 ako nije r3 postalo 0
+                        subs r0, r0, #1
+                        bne loop1                @vrati se na loop1 ako r0 nije postalo 0
+
+
+        mov     r7,#4                            @od ovog dijela je standardni kod koji sluzi za ispis
+        mov     r0,#1
+        ldr     r1,=prompt2
+        mov     r2,#15
+        swi     #0
+
+        mov     r7,#4
+        mov     r0,#1
+        ldr     r1,=elementi
+        mov     r2,#15
+        swi     #0
+
+
+        addr1: .word elementi
+        mov     r7,#1
+        swi     #0
+.end
+
+****************************Zadatak 3************************************
+.data
+         unos:
+         .ascii "Unesite broj:\n"
+         uneseno:
+         .ascii "      \n"
+         ispisi:
+         .ascii "......\n"
+
+
+.text
+.global _start
+        _start:
+        mov r7, #4         @standardno za unos
+        mov r0, #1
+        ldr r1, =unos
+        mov r2, #14
+        swi #0
+
+        mov r7, #3
+        mov r0, #0
+        ldr r1, =uneseno
+        mov r2, #7          @pretpostavljamo da se nece unijeti broj veci od 6 cifara
+        swi #0
+
+        ldr r3, addr_b      @u r3 upisi adresu na koju je unesen string
+        ldr r5, addr_ispisi @u r5 upisujemo adresu na koji ispisujemo string
+        ldr r6, addr_b      @u r6 se upisuje adresa koje ne smijemo premasiti prilikom unosa
+        add r6, r6, #7
+
+        loop1:
+        ldrb r4, [r3]       @u r4 ucitavamo vrijednost bajta koji se nalazi na adresi r3
+
+        cmp r4, #10         @poredimo vrijednost u r4 sa 10 (što u ASCII kodu označava novi red)
+        beq kraj            @brach equal, ako je r4 jednako 10, onda prekidamo unos
+        cmp r4, #48         @također, provjeravamo da li se unesena vrijednost bajta u registru r4 nalazi
+        blt kraj            @između vrijednosti 48 i 57, što u ACSCII kodu prestavlja vrijednsoti za 0 i 9
+        cmp r4, #57         @ako se vrijednost bajta u registru r4 ne nalazu u opsegu od 48 do 57, to znači da se
+        bgt kraj            @vise ne unosi broj, nego da je uneseno nešto sto nije broj, pa prekidamo unos
+
+        strb r4, [r5]       @ako smo dosli dovdje, to znaci da vrijednost u registru r4 jeste broj, pa je mozemo sacuvati na adresu na koju pokazuje r5
+        add r5, r5, #1      @povecamo adresu na koju se upisuju bajtovi za 1
+        add r3, r3, #1      @povecamo adresu sa koje uzimamo bajtove za 1
+        cmp r3, r6          @poredimo vrijednosti r3 i r6, da ne bi izasli iz prethodno definisanog opsega
+        blt loop1           @ako je r3 < r6, vracamo se na pocetak petlje i uzimamo sljedeci bajt
+        beq kraj            @ako je r3 = r6, unos je zavrsen
+
+        kraj:               @u slucaju da je zavrsen unos, radi sljedece
+        mov r7, #4
+        mov r0, #1
+        ldr r1, =ispisi
+        mov r2, #7
+        swi #0
+
+        addr_b: .word uneseno
+        addr_ispisi: .word ispisi
+
+        mov r7, #1
+        swi #0
+.end
+
