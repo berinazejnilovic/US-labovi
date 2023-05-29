@@ -1,0 +1,21 @@
+#!/usr/bin/python3
+import RPi.GPIO as GPIO
+import time
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+GPIO.setup(2,GPIO.OUT)
+GPIO.setup(3,GPIO.OUT)
+GPIO.setup(4,GPIO.OUT)
+m=GPIO.PWM(2,500)
+GPIO.output(3,1)
+GPIO.output(4,1)
+GPIO.setup(17,GPIO.IN)
+k=100
+m.start(0)
+while True:
+	if GPIO.input(17)==0:
+		k=k-10
+	if k<0:
+		k=100
+		m.ChangeDutyCycle(k)
+		time.sleep(0.2)
