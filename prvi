@@ -1,0 +1,72 @@
+.global _start
+_start:
+        .data
+prompt:
+        .asciz "Unesi vrijednost N: \n"
+fibonacci:
+        .asciz "Fibonaccijev niz: \n"
+result:
+        .asciz "               "
+
+        .text
+        .global _start
+
+_start:
+        mov     r7, #4
+        mov     r0, #1
+        ldr     r1, =prompt
+        mov     r2, #21    
+        swi     #0
+
+        mov     r7, #3
+        mov     r0, #0
+        ldr     r1, =result
+        mov     r2, #48    
+        swi     #0
+
+        ldr     r1, =0      
+        str     r1, [r0]    
+        add     r0, r0, #4  
+
+        ldr     r1, =1      
+        str     r1, [r0]    
+        add     r0, r0, #4  
+
+        mov     r3, #2      
+
+fibonacci_loop:
+        ldr     r2, [r0, #-8]     
+        ldr     r1, [r0, #-4]     
+        add     r1, r1, r2       
+
+        str     r1, [r0]          
+        add     r0, r0, #4        
+
+        subs    r2, r3, #48       
+        beq     print_fibonacci  
+        adds    r3, r3, #1       
+        b       fibonacci_loop    
+
+print_fibonacci:
+        mov     r7, #4
+        mov     r0, #1
+        ldr     r1, =fibonacci
+        mov     r2, #19   
+        swi     #0
+
+        mov     r7, #4
+        mov     r0, #1
+        ldr     r1, =result
+        mov     r2, #48    
+        swi     #0
+
+        mov     r0, #0
+        ldr     r1, =result
+        ldr     r2, =192    
+        mov     r7, #4
+        swi     #0
+
+        mov     r7, #1
+        swi     #0
+
+.end
